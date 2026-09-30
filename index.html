@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ButterflyDreaming — ABC (standalone)</title>
+<style>
+  :root { --gold: #c9a227; --ink: #e8e8e0; --dim: #9e9e90; --ground: #0a0a0f; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--ground); color: var(--ink);
+               font: 15px/1.5 Georgia, "Times New Roman", serif; }
+  body { display: flex; flex-direction: column; }
+
+  header { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap;
+           padding: 10px 16px; border-bottom: 1px solid #2a2a32; }
+  header h1 { font-size: 1rem; font-weight: normal; margin: 0; letter-spacing: .04em; }
+  header a { color: var(--gold); text-decoration: none; border-bottom: 1px solid transparent; }
+  header a:hover { border-bottom-color: var(--gold); }
+  header .spacer { margin-left: auto; }
+
+  main { flex: 1; display: flex; min-height: 0; flex-wrap: wrap; }
+  #stage { flex: 1 1 460px; min-width: 300px; min-height: 430px; display: flex; }
+  #stage iframe { flex: 1; border: 0; }
+
+  #side { flex: 0 1 420px; min-width: 300px; display: flex; flex-direction: column;
+          gap: 10px; padding: 12px 16px; border-left: 1px solid #2a2a32; min-height: 0; }
+  #side h2 { font-size: .85rem; font-weight: normal; color: var(--dim); margin: 0;
+             letter-spacing: .06em; text-transform: uppercase; }
+  #script { flex: 1; min-height: 180px; width: 100%; resize: vertical;
+            background: #05050a; color: var(--ink); border: 1px solid #2a2a32;
+            border-radius: 3px; padding: 8px;
+            font: 12px/1.45 "Courier New", Courier, monospace; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  button { background: #12121a; border: 1px solid var(--gold); color: var(--gold);
+           font: inherit; font-size: .8rem; padding: 6px 12px; border-radius: 3px;
+           cursor: pointer; }
+  button:hover { background: #1c1c26; color: #fff; }
+  #note { color: var(--dim); font-size: .8rem; min-height: 1.2em; }
+
+  #about { padding: 12px 16px; border-top: 1px solid #2a2a32; color: var(--dim);
+           font-size: .85rem; }
+  #about p { margin: 0 0 .6em; max-width: 62ch; }
+  #about strong { color: var(--ink); font-weight: normal; }
+
+  /* ── Phone and narrow tablet ────────────────────────────────────────────
+     Desktop holds the page to the viewport — body is height:100% and main is
+     flex:1 — which is right for two columns side by side. Below ~620px the
+     columns WRAP, and then there is nowhere for the second one to go: it
+     overflowed, the buttons landed on top of the explanation, and the
+     explanation's first lines went under the script box.
+
+     So on a narrow screen the page stops being a fixed frame and becomes a
+     DOCUMENT that scrolls: module, script, buttons, explanation, in that order.
+     The breakpoint is 720px rather than the ~620 where wrapping starts, so a
+     portrait tablet gets the scrolling layout too rather than a cramped
+     side-by-side one.
+
+     The script box also halves, as asked — but the overlap was the frame, not
+     the box, so both changes are here. */
+  @media (max-width: 720px) {
+    html, body { height: auto; }
+    body { min-height: 100%; }
+    main { display: block; }
+
+    /* The module fills whatever iframe it is given, so the iframe needs a
+       definite height here — a flex row was giving it one before. Unlike the
+       Kolam modules this one is not square and cannot shrink with the width:
+       the transport, the output panel and a 12-row stepper column all need
+       room whatever the phone is. Hence a height in absolute terms, capped so
+       it cannot eat a tall phone's whole screen. */
+    #stage { min-height: 0; height: clamp(430px, 72vh, 540px); }
+    #stage iframe { width: 100%; height: 100%; }
+
+    #side { border-left: 0; border-top: 1px solid #2a2a32; min-height: 0; }
+    /* Half the desktop box. Enough to read a stanza of directives, and it
+       scrolls for the rest. */
+    #script { flex: none; min-height: 0; height: 30vh; max-height: 220px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ABC — a ButterflyDreaming media module</h1>
+  <span class="spacer"></span>
+  <a href="https://butterflydreaming.org" target="_blank" rel="noopener">butterflydreaming.org →</a>
+</header>
+
+<main>
+  <!-- No src until the listener is attached: the module announces BD_READY as
+       soon as it loads, and a listener added afterwards would miss it. -->
+  <div id="stage"><iframe id="frame" title="ABC"></iframe></div>
+
+  <div id="side">
+    <h2>Script</h2>
+    <textarea id="script" spellcheck="false" aria-label="The module's script"></textarea>
+    <div class="row">
+      <button id="copy"  type="button" title="Copy the whole script to the clipboard">Copy script</button>
+      <button id="reset" type="button" title="Back to the script this page opened with">Reset</button>
+    </div>
+    <div id="note"></div>
+  </div>
+</main>
+
+<section id="about">
+  <!-- PLACEHOLDER — the author's own words go here. Left deliberately short so
+       replacing it is a single edit rather than an untangling. -->
+  <p><strong>About this page.</strong> A single media module from
+  ButterflyDreaming, running on its own. Edit the score and the music
+  follows. <strong>Copy script</strong>
+  takes the whole thing to your clipboard — where it goes after that is yours to
+  decide.</p>
+  <p>ButterflyDreaming is a collaborative arts-therapy and peer-counselling
+  system: a corpus of literature, art and music that anonymous users may collage
+  together in conversation. This module is one of its parts, extracted so that
+  anyone can play with it, and so that a developer can see what a module has to
+  do.</p>
+  <p><strong>Press play before anything else.</strong> Browsers — iOS Safari
+  most strictly — will not start audio without a deliberate gesture in the page
+  that makes the sound, so nothing is heard until you ask for it.</p>
+</section>
+
+<script>
+'use strict';
+
+// ── The whole protocol, which is the point of this file ──────────────────────
+//
+// A ButterflyDreaming media module is an iframe that speaks four messages:
+//
+//   module → host   BD_READY        "I am loaded; send me a script"
+//   host   → module bd_script_update { script }   the text to render
+//   module → host   bd_av_state     { text, fromDrift }   its live script,
+//                                   announced on EVERY render
+//   module → host   bd_module_log   { level, line }       its console
+//
+// That is all. There is no build step, no bundler and no framework: the module
+// is one HTML file that fetches Tone.js and abcjs from a CDN. To write your own, answer
+// bd_script_update and announce bd_av_state, and any ButterflyDreaming host —
+// this page, or BD itself — can drive it.
+//
+// DELIBERATELY ABSENT: the deep-link machinery the earlier standalones carried.
+// Packing a whole script into a URL meant compression, a wire table of short
+// keys, and a length ceiling to measure against — a great deal of apparatus in
+// the way of anyone reading this to learn how a module works. Copy the script
+// and paste it wherever you like instead.
+
+const frame  = document.getElementById('frame');
+const script = document.getElementById('script');
+const note   = document.getElementById('note');
+
+// The figure this page opens with. Any valid module script will do; this one is
+// the default from the ButterflyDreaming corpus.
+const DEFAULT_SCRIPT = [
+  '%%bd_module bd_M_ABC',
+  '%%bd_p_reverb_wet 0.35',
+  '%%bd_p_reverb_decay 2.5',
+  '%%bd_p_vibrato_frequency 5.0',
+  '%%bd_p_vibrato_depth 0.2',
+  '%%bd_p_chorus_wet 0.3',
+  '%%bd_p_chorus_depth 0.4',
+  '%%bd_p_loop true',
+  '%%bd_p_loop_gap 6',
+  '%%bd_score [',
+  'X:1',
+  'T:Dream Fragment',
+  'M:4/4',
+  'L:1/8',
+  'Q:1/4=60',
+  'K:Amin',
+  '|A2 B2 [CEA]4 d2|e4 [EAc]4|',
+  '|A2 c2 e2 c2|A4 E4|',
+  '%%bd_]',
+  ''
+].join('\n');
+
+let ready   = false;
+let pending = null;
+// The module's LIVE script, updated on every frame including the drift timer's.
+// The textarea deliberately does not track those (see onState), but Copy should
+// give you the figure as it is right now, so it reads this instead.
+let live = DEFAULT_SCRIPT;
+
+function push(text) {
+  live = text;
+  if (!ready) { pending = text; return; }
+  try { frame.contentWindow.postMessage({ type: 'bd_script_update', script: text }, '*'); } catch (_) {}
+}
+
+function say(msg) {
+  note.textContent = msg || '';
+  if (msg) setTimeout(() => { if (note.textContent === msg) note.textContent = ''; }, 2000);
+}
+
+// The module announces its script on every render, which is how a stepper move
+// gets back into the textarea. `fromDrift` marks a frame a timer produced rather
+// than a person — nothing in this module drives one today, but the flag is part
+// of the contract and a host that ignored it would fight anyone typing whenever
+// one did. `live` follows those frames regardless, so Copy is never stale.
+function onState(text, fromDrift) {
+  live = text;
+  if (fromDrift) return;
+  if (document.activeElement === script) return;   // never under a live cursor
+  if (script.value !== text) script.value = text;
+}
+
+window.addEventListener('message', (e) => {
+  const d = e && e.data;
+  if (!d || typeof d.type !== 'string') return;
+  if (d.type === 'BD_READY') {
+    ready = true;
+    // This host draws NOTHING around the module. BD does: it stamps its ↓↑
+    // arrows and Extension panel into the module's two dock slots, so the
+    // panel grid reserves an area for each. Here nothing ever arrives in
+    // them and they show as empty dashed boxes holding a third of the top
+    // row and a third of the bottom. Released, the stepper column runs the
+    // full height and the output panel gains the width.
+    //
+    // hideControls stays FALSE: the steppers are wanted here. That is the whole
+    // reason these are two settings and not one.
+    try { frame.contentWindow.postMessage(
+      { type: 'bd_ui_config', hideControls: false, hostChrome: false }, '*'); } catch (_) {}
+    push(pending != null ? pending : script.value);
+    pending = null;
+    return;
+  }
+  if (d.type === 'bd_av_state' && typeof d.text === 'string') onState(d.text, !!d.fromDrift);
+  // The module forwards its own console so a host can see inside the iframe.
+  if (d.type === 'bd_module_log') console[d.level === 'error' ? 'error' : 'log']('[module] ' + d.line);
+  if (d.type === 'BD_ERROR') say((d.payload && d.payload.message) || 'the module reported an error');
+});
+
+// Typing re-renders, but not on every keystroke: a half-finished number would
+// send the figure to a default and back on the way to the one you wanted.
+let typing = null;
+script.addEventListener('input', () => {
+  clearTimeout(typing);
+  typing = setTimeout(() => push(script.value), 400);
+});
+
+document.getElementById('copy').addEventListener('click', async () => {
+  // `live`, not the textarea: a stepper move that has not yet been echoed back
+  // into the box would otherwise be lost, and what you want is what you hear.
+  const text = live;
+  try {
+    await navigator.clipboard.writeText(text);
+    say('script copied');
+  } catch (_) {
+    // Clipboard refused — usually an insecure context or a lost gesture.
+    // Select it instead so Cmd/Ctrl+C still works.
+    script.value = text;
+    script.focus();
+    script.select();
+    say('press Cmd/Ctrl+C to copy');
+  }
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+  script.value = DEFAULT_SCRIPT;
+  push(DEFAULT_SCRIPT);
+  say('back to the opening score');
+});
+
+script.value = DEFAULT_SCRIPT;
+// Only now: the listener is attached, so BD_READY cannot arrive unheard.
+frame.src = 'music_module.html';
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+music_module.html was copied from ButterflyDreaming:
+  source : M_Music/music_module.html
+  commit : 8ae5581
+  dated  : 2026-09-30
+  taken  : 2026-09-30T11:49Z
+
+Refresh with ./sync_from_bd.sh — a copy-down, not a merge.
