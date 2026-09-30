@@ -61,8 +61,8 @@ Answer `bd_script_update`, announce `bd_av_state`, and **any** ButterflyDreaming
 host can drive your module — this page, or BD itself, or a viewer on another
 device. Nothing else is required.
 
-`index.html` is a complete host in about 120 lines of plain JavaScript, written
-to be read. Two details in it are worth stealing:
+`index.html` is a complete host in about 145 lines of plain JavaScript —
+88 of code and 46 of comment — written to be read. Two details in it are worth stealing:
 
 - **Attach the message listener before setting the iframe's `src`.** The module
   announces `BD_READY` the moment it loads, and a listener added afterwards
@@ -126,6 +126,14 @@ the copy is refreshed by one deliberate command rather than by hand:
 It overwrites `music_module.html` from the BD working tree and records which
 commit it came from in `MODULE_SOURCE.txt`. **If you have changed the module
 here, that command will discard your changes** — it is a copy-down, not a merge.
+
+---
+
+## Picking up development
+
+`AGENTS.md` in this repository is the working guide: what may and may not be
+edited here, how to prepare a change for ButterflyDreaming, the BDX/AVX/RX
+harness, and a list of developments worth trying. Start there.
 
 ---
 
