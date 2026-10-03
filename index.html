@@ -14,9 +14,9 @@
   header { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap;
            padding: 10px 16px; border-bottom: 1px solid #2a2a32; }
   header h1 { font-size: 1rem; font-weight: normal; margin: 0; letter-spacing: .04em; }
-  header a { color: var(--gold); text-decoration: none; border-bottom: 1px solid transparent; }
-  header a:hover { border-bottom-color: var(--gold); }
-  header .spacer { margin-left: auto; }
+  /* No `header a` or `.spacer` rules: the link moved to the foot of the page
+     (see .bd-link) and the spacer had nothing left to push apart. Dead rules
+     outlive the markup that needed them and then mislead the next reader. */
 
   main { flex: 1; display: flex; min-height: 0; flex-wrap: wrap; }
   #stage { flex: 1 1 460px; min-width: 300px; min-height: 430px; display: flex; }
@@ -41,6 +41,16 @@
            font-size: .85rem; }
   #about p { margin: 0 0 .6em; max-width: 62ch; }
   #about strong { color: var(--ink); font-weight: normal; }
+  /* The link lives at the FOOT of the page, after the paragraph that says what
+     ButterflyDreaming is — so the page ends by naming the thing and then
+     pointing at it, rather than offering a link in the top corner before
+     anyone knows what it is for. It had the header's styling before; this
+     restates it here rather than leaving it to inherit from a rule it no
+     longer sits under. */
+  .bd-link { margin-top: 1em; }
+  .bd-link a { color: var(--gold); text-decoration: none;
+               border-bottom: 1px solid transparent; font-size: .95rem; }
+  .bd-link a:hover { border-bottom-color: var(--gold); }
 
   /* ── Phone and narrow tablet ────────────────────────────────────────────
      Desktop holds the page to the viewport — body is height:100% and main is
@@ -82,8 +92,6 @@
 
 <header>
   <h1>ABC — a ButterflyDreaming media module</h1>
-  <span class="spacer"></span>
-  <a href="https://butterflydreaming.org" target="_blank" rel="noopener">butterflydreaming.org →</a>
 </header>
 
 <main>
@@ -110,14 +118,15 @@
   follows. <strong>Copy script</strong>
   takes the whole thing to your clipboard — where it goes after that is yours to
   decide, e.g. paste it back in the future to restore a past pattern.</p>
+  <p><strong>Press play before anything else.</strong> Browsers — iOS Safari
+  most strictly — will not start audio without a deliberate gesture in the page
+  that makes the sound, so nothing is heard until you ask for it.</p>
   <p>ButterflyDreaming is a collaborative arts-therapy and peer-counselling
   system: a corpus of literature, art and music that anonymous users may collage
   together in conversation. This module is one of its parts, extracted so that
   anyone can play with it, and so that a developer can see what a module has to
   do.</p>
-  <p><strong>Press play before anything else.</strong> Browsers — iOS Safari
-  most strictly — will not start audio without a deliberate gesture in the page
-  that makes the sound, so nothing is heard until you ask for it.</p>
+  <p class="bd-link"><a href="https://butterflydreaming.org" target="_blank" rel="noopener">butterflydreaming.org &rarr;</a></p>
 </section>
 
 <script>
