@@ -1,8 +1,8 @@
 music_module.html was copied from ButterflyDreaming:
   source : M_Music/music_module.html
   samples: M_Music/bass-recorder/ (4 files)
-  commit : 31529bd
-  dated  : 2026-09-30
-  taken  : 2026-09-30T12:21Z
+  commit : cfa5d2f
+  dated  : 2026-10-06
+  taken  : 2026-10-06T17:20Z
 
 Refresh with ./sync_from_bd.sh — a copy-down, not a merge.
